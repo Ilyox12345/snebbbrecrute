@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ENTRETIEN — SNEBUR'COMMUNITY</title>
+<style>
+:root {
+  --bg: #0b1220;
+  --bg2: #101a2e;
+  --card: #0f192c;
+  --accent: #5eead4;
+  --accent2: #0ea5e9;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --success:#22c55e;
+  --error:#ef4444;
+  --radius: 14px;
+}
+*{box-sizing:border-box;}
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+  font-family:'Inter',system-ui,sans-serif;
+  color:var(--text);
+  background:linear-gradient(180deg,var(--bg),#060d1a);
+}
+button{cursor:pointer;transition:all .25s ease}
+.container{
+  width:100%;
+  max-width:1100px;
+  margin:0 auto;
+  padding:40px 20px;
+}
+.card{
+  background:var(--card);
+  padding:30px;
+  border-radius:var(--radius);
+  box-shadow:0 10px 40px rgba(0,0,0,.4);
+  animation:fadeIn .5s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h1,h2,h3{margin-top:0;font-weight:700;}
+h1{font-size:24px;color:var(--accent);}
+label{display:block;margin-top:15px;font-weight:600;color:var(--muted);}
+input,textarea,select{
+  width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px;padding:10px;color:var(--text);font-size:15px;
+}
+textarea{min-height:100px;resize:vertical;}
+.btn{
+  background:var(--accent2);color:#fff;border:none;
+  padding:10px 16px;border-radius:10px;font-weight:700;
+}
+.btn:hover{filter:brightness(1.1);}
+.btn.secondary{background:transparent;border:1px solid var(--accent2);color:var(--accent2);}
+.btn.secondary:hover{background:var(--accent2);color:#fff;}
+.flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.hidden{display:none;}
+.center{text-align:center;}
+.small{font-size:13px;color:var(--muted);}
+.log{max-height:300px;overflow-y:auto;margin-top:10px;}
+.log-item{background:rgba(255,255,255,0.05);padding:10px;border-radius:8px;margin-bottom:8px;}
+.success{color:var(--success);}
+.error{color:var(--error);}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="login-screen" class="card">
+    <h1>Connexion Admin</h1>
+    <p class="small">Accès réservé aux modérateurs autorisés.</p>
+    <label>Identifiant</label>
+    <input id="login-user" type="text" placeholder="Entrez vos identifiants admin">
+    <label>Mot de passe</label>
+    <input id="login-pass" type="password" placeholder="••••••••">
+    <button id="login-btn" class="btn" style="margin-top:15px;">Se connecter</button>
+    <p class="small" style="margin-top:10px;"></p>
+  </div>
+
+  <div id="main-app" class="hidden">
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <h1>ENTRETIEN — SNEBUR'COMMUNITY</h1>
+        <p class="small">Espace administration des entretiens pour devenir animateur</p>
+      </div>
+      <button id="logout-btn" class="btn secondary">Déconnexion</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 380px;gap:20px;margin-top:20px;">
+      <!-- LEFT: FORM -->
+      <div class="card" id="form-card">
+        <form id="interview-form">
+          <h2>Informations candidat</h2>
+          <label>Nom complet</label>
+          <input id="cand_name" type="text" required placeholder="Prénom Nom">
+
+          <label>Pseudo Discord</label>
+          <input id="cand_discord" type="text" required placeholder="pseudo#0000">
+
+          <div style="display:flex;gap:10px;">
+            <div style="flex:1;">
+              <label>Âge</label>
+              <input id="cand_age" type="number" min="13" max="120">
+            </div>
+            <div style="flex:1;">
+              <label>Temps sur le serveur</label>
+              <select id="cand_time">
+                <option value="">- Sélectionner -</option>
+                <option>Moins d’un mois</option>
+                <option>1–3 mois</option>
+                <option>3–6 mois</option>
+                <option>6–12 mois</option>
+                <option>Plus d’un an</option>
+              </select>
+            </div>
+          </div>
+
+          <h2>Questions d’évaluation (réponses ouvertes)</h2>
+
+          <!-- Motivation & soft skills -->
+          <label>1) Pourquoi veux-tu devenir animateur/animatrice sur SNEBUR'Community ?</label>
+          <textarea id="q_1" placeholder="Explique ta motivation, ce qui t’attire dans le rôle..."></textarea>
+
+          <label>2) Quelles sont tes 5 principales qualités qui te rendent apte pour ce rôle ?</label>
+          <textarea id="q_2" placeholder="Ex : empathie, créativité, patience, organisation, prise de parole"></textarea>
+
+          <label>3) Raconte une expérience où tu as dû résoudre un conflit entre membres (ou une situation difficile).</label>
+          <textarea id="q_3"></textarea>
+
+          <label>4) Donne 5 idées d’événements originaux (format, règles, récompenses) à proposer sur le serveur.</label>
+          <textarea id="q_4" placeholder="Ex : Tournoi, quiz, atelier créatif..."></textarea>
+
+          <label>5) Comment inciterais-tu les membres timides à participer aux événements ?</label>
+          <textarea id="q_5"></textarea>
+
+          <label>6) As-tu déjà géré des bots/mods (ex : Dyno, MEE6, YAGPDB, scripts) ? Décris.</label>
+          <textarea id="q_6" placeholder="Précise les bots et actions réalisées (commandes, automod, logs)"></textarea>
+
+          <label>7) Connais-tu des outils pour créer des visuels/miniatures ? (ex : Canva, Photoshop...)</label>
+          <textarea id="q_7"></textarea>
+
+          <label>8) En cas d’attaque spam / raid, quelles actions immédiates prendrais-tu ?</label>
+          <textarea id="q_8"></textarea>
+
+          <label>9) Décris comment tu organises un événement (étapes : annonce, inscription, déroulé, clôture).</label>
+          <textarea id="q_9"></textarea>
+
+          <label>10) Donne 3 règles/directions que tu imposerais pour assurer une bonne ambiance lors d’un event.</label>
+          <textarea id="q_10"></textarea>
+
+          <!-- Behavioural & scenario -->
+          <label>11) Un membre te provoque et t’insulte pendant un live. Que fais-tu ?</label>
+          <textarea id="q_11"></textarea>
+
+          <label>12) Comment évalues-tu la réussite d’un événement ? Quels KPI / retours utilises-tu ?</label>
+          <textarea id="q_12"></textarea>
+
+          <label>13) Es-tu à l’aise avec la prise de parole vocale (micro) ? As-tu déjà streamé ou animé en vocal ?</label>
+          <textarea id="q_13"></textarea>
+
+          <label>14) Gestion du temps : si tu devais animer 2 événements en même temps, que ferais-tu ?</label>
+          <textarea id="q_14"></textarea>
+
+          <label>15) As-tu des disponibilités régulières (jours / plages horaires) ? Indique les créneaux.</label>
+          <input id="q_15" type="text" placeholder="Ex : Lun-Mer 18:00–22:00, Week-end ponctuel">
+
+          <label>16) As-tu des préférences pour certains types d’événements ? (musique, jeux, culture, artistique...)</label>
+          <input id="q_16" type="text">
+
+          <label>17) Souhaites-tu un rôle plutôt visible (stream/host) ou en coulisse (organisation/modération) ?</label>
+          <select id="q_17">
+            <option value="">- Sélectionner -</option>
+            <option>Visible (présence, annonces)</option>
+            <option>Organisation (planning, préparation)</option>
+            <option>Mixte</option>
+          </select>
+
+          <label>18) Quelle est ta réaction si un administrateur senior invalide une décision que tu as prise ?</label>
+          <textarea id="q_18"></textarea>
+
+          <label>19) Indique ton niveau de français et d’anglais (ou autres langues utiles).</label>
+          <input id="q_19" type="text" placeholder="Ex : Français (C2), Anglais (B2)">
+
+          <label>20) As-tu des contraintes légales / d’âge / parentales à signaler ?</label>
+          <input id="q_20" type="text">
+
+          <label>21) Test de créativité : propose un mini-event 100 % original en 4 lignes.</label>
+          <textarea id="q_21"></textarea>
+
+          <label>22) Petites questions techniques : sais-tu créer un lien d’invitation avec permissions limitées ? Décris.</label>
+          <textarea id="q_22"></textarea>
+
+          <label>23) As-tu déjà eu des avertissements ou sanctions sur d’autres communautés ? (Si oui, explique)</label>
+          <textarea id="q_23"></textarea>
+
+          <label>24) Comment recueillerais-tu du feedback après un event ? (format, timing)</label>
+          <textarea id="q_24"></textarea>
+
+          <label>25) Autres remarques / éléments à ajouter</label>
+          <textarea id="q_25"></textarea>
+
+          <h2>Décision & notes</h2>
+          <label>Notes privées du modérateur</label>
+          <textarea id="mod_notes" placeholder="Observations, points à suivre..."></textarea>
+
+          <label>Décision finale</label>
+          <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
+            <label><input type="radio" name="decision" value="accepted" checked> Accepter</label>
+            <label><input type="radio" name="decision" value="rejected"> Ne pas accepter</label>
+            <label><input type="radio" name="decision" value="probation"> Acceptation sous condition (probation)</label>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:16px;">
+            <button type="button" id="save-entry" class="btn">Enregistrer l'entretien</button>
+            <button type="button" id="preview-receipt" class="btn secondary">Voir reçu</button>
+            <button type="button" id="download-entry" class="btn secondary">Télécharger reçu (HTML)</button>
+            <button type="button" id="post-discord" class="btn">Poster sur Discord</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- RIGHT: SIDEBAR / LOG -->
+      <aside class="card" id="sidebar">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <h3>Journal des entretiens</h3>
+            <div class="small">Historique stocké localement</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="small">Total : <span id="total-count">0</span></div>
+            <div class="small">Acceptés : <span id="accepted-count">0</span></div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <input id="search-input" placeholder="Rechercher un pseudo / nom..." style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);width:100%">
+        </div>
+
+        <div id="log-list" class="log" style="margin-top:12px;"></div>
+
+        <hr>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button id="export-json" class="btn secondary">Exporter JSON</button>
+          <button id="clear-db" class="btn secondary">Supprimer tout</button>
+          <button id="settings-btn" class="btn secondary">Paramètres</button>
+        </div>
+
+        <div id="settings-panel" class="hidden" style="margin-top:12px;">
+          <label>Webhook Discord (si tu veux envoyer automatiquement)</label>
+          <input id="webhook-input" placeholder="Coller ton webhook ici">
+          <label>Nom du serveur (affichage)</label>
+          <input id="server-name" placeholder="SNEBUR'COMMUNITY">
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button id="save-settings" class="btn">Sauvegarder</button>
+            <button id="close-settings" class="btn secondary">Fermer</button>
+          </div>
+          <div class="small" style="margin-top:8px;color:var(--muted)">Le webhook peut être renseigné ici pour tests mais il sera visible côté client (prends garde).</div>
+        </div>
+      </aside>
+    </div> <!-- end grid -->
+    <!-- Receipt modal (hidden) -->
+    <div id="receipt-modal" class="card hidden" style="margin-top:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h2>Reçu d'entretien</h2>
+        <div>
+          <button id="print-receipt" class="btn secondary">Imprimer</button>
+          <button id="close-receipt" class="btn secondary">Fermer</button>
+        </div>
+      </div>
+      <div id="receipt-content" style="margin-top:12px;"></div>
+    </div>
+
+  </div> <!-- end main-app -->
+</div> <!-- end container -->
+
+<script>
+/* ---------- CONFIG ---------- */
+const WEBHOOK_URL = "https://discord.com/api/webhooks/1424116598436008048/stxcU6W-i-5efTk0hOxMCaiQgzApMTIbJlekoEeYhBRKMJOwN95Y3Ngg0AgthTqi7pkB"; // <-- remplace par ton webhook si tu veux (optionnel)
+const DEFAULT_SERVER_NAME = "SNEBUR'COMMUNITY";
+
+/* Admins (3 comptes, sans prénoms) */
+const ADMINS = [
+  { user: "Neil", pass: "Neil@@@" },
+  { user: "Ilyox", pass: "Ilyox@@@" },
+  { user: "Maëva", pass: "Maëva@@@" }
+];
+
+/* ---------- UI refs ---------- */
+const loginScreen = document.getElementById('login-screen');
+const mainApp = document.getElementById('main-app');
+const loginBtn = document.getElementById('login-btn');
+const logoutBtn = document.getElementById('logout-btn');
+
+/* ---------- Auth ---------- */
+let currentAdmin = null;
+loginBtn.addEventListener('click', ()=>{
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value.trim();
+  const found = ADMINS.find(a=>a.user===u && a.pass===p);
+  if(found){
+    currentAdmin = found.user;
+    loginScreen.classList.add('hidden');
+    mainApp.classList.remove('hidden');
+    loadAllEntries();
+    refreshCounts();
+  } else {
+    alert('Identifiants incorrects');
+  }
+});
+logoutBtn.addEventListener('click', ()=>{
+  if(confirm('Se déconnecter ?')) {
+    currentAdmin = null;
+    loginScreen.classList.remove('hidden');
+    mainApp.classList.add('hidden');
+  }
+});
+
+/* ---------- IndexedDB setup ---------- */
+let db;
+const DB_NAME = 'snebur_interviews_db';
+const DB_VERSION = 1;
+const STORE_NAME = 'interviews';
+const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+request.onupgradeneeded = function(e){
+  db = e.target.result;
+  if(!db.objectStoreNames.contains(STORE_NAME)){
+    const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+    store.createIndex('candidate','candidate',{unique:false});
+    store.createIndex('discord','discord',{unique:false});
+    store.createIndex('created','created',{unique:false});
+  }
+};
+
+request.onsuccess = function(e){
+  db = e.target.result;
+  console.log('IndexedDB ready');
+  loadAllEntries();
+};
+
+request.onerror = function(e){
+  console.error('IndexedDB error', e);
+  alert('Erreur IndexedDB — certaines fonctionnalités peuvent être limitées');
+};
+
+/* ---------- Helpers ---------- */
+function getFormData(){
+  return {
+    moderator: currentAdmin || 'unknown',
+    serverName: (document.getElementById('server-name') && document.getElementById('server-name').value.trim()) || DEFAULT_SERVER_NAME,
+    candidate: document.getElementById('cand_name').value.trim(),
+    discord: document.getElementById('cand_discord').value.trim(),
+    age: document.getElementById('cand_age').value.trim(),
+    timeOnServer: document.getElementById('cand_time').value,
+    answers: {
+      q1: document.getElementById('q_1').value.trim(),
+      q2: document.getElementById('q_2').value.trim(),
+      q3: document.getElementById('q_3').value.trim(),
+      q4: document.getElementById('q_4').value.trim(),
+      q5: document.getElementById('q_5').value.trim(),
+      q6: document.getElementById('q_6').value.trim(),
+      q7: document.getElementById('q_7').value.trim(),
+      q8: document.getElementById('q_8').value.trim(),
+      q9: document.getElementById('q_9').value.trim(),
+      q10: document.getElementById('q_10').value.trim(),
+      q11: document.getElementById('q_11').value.trim(),
+      q12: document.getElementById('q_12').value.trim(),
+      q13: document.getElementById('q_13').value.trim(),
+      q14: document.getElementById('q_14').value.trim(),
+      q15: document.getElementById('q_15').value.trim(),
+      q16: document.getElementById('q_16').value.trim(),
+      q17: document.getElementById('q_17').value,
+      q18: document.getElementById('q_18').value.trim(),
+      q19: document.getElementById('q_19').value.trim(),
+      q20: document.getElementById('q_20').value.trim(),
+      q21: document.getElementById('q_21').value.trim(),
+      q22: document.getElementById('q_22').value.trim(),
+      q23: document.getElementById('q_23').value.trim(),
+      q24: document.getElementById('q_24').value.trim(),
+      q25: document.getElementById('q_25').value.trim()
+    },
+    notes: document.getElementById('mod_notes').value.trim(),
+    decision: document.querySelector('input[name="decision"]:checked').value,
+    created: new Date().toISOString()
+  };
+}
+
+/* ---------- UI: Settings panel ---------- */
+const settingsBtn = document.getElementById('settings-btn');
+const settingsPanel = document.getElementById('settings-panel');
+const saveSettingsBtn = document.getElementById('save-settings');
+const closeSettingsBtn = document.getElementById('close-settings');
+
+settingsBtn.addEventListener('click', ()=>{ settingsPanel.classList.toggle('hidden'); });
+closeSettingsBtn.addEventListener('click', ()=>{ settingsPanel.classList.add('hidden'); });
+saveSettingsBtn.addEventListener('click', ()=>{
+  const wh = document.getElementById('webhook-input').value.trim();
+  const name = document.getElementById('server-name').value.trim();
+  localStorage.setItem('snebur_webhook', wh);
+  localStorage.setItem('snebur_servername', name);
+  alert('Paramètres sauvegardés localement');
+});
+
+/* Load saved settings */
+window.addEventListener('load', ()=>{
+  const savedWh = localStorage.getItem('snebur_webhook') || '';
+  const savedName = localStorage.getItem('snebur_servername') || DEFAULT_SERVER_NAME;
+  if(document.getElementById('webhook-input')) document.getElementById('webhook-input').value = savedWh;
+  if(document.getElementById('server-name')) document.getElementById('server-name').value = savedName;
+});
+/* ---------- Save entry ---------- */
+const saveBtn = document.getElementById('save-entry');
+saveBtn.addEventListener('click', ()=>{
+  if(!db){ alert('DB non initialisée'); return; }
+  const entry = getFormData();
+  if(!entry.candidate || !entry.discord){ alert('Nom et pseudo Discord requis'); return; }
+
+  const tx = db.transaction(STORE_NAME, 'readwrite');
+  const store = tx.objectStore(STORE_NAME);
+  const req = store.add(entry);
+  req.onsuccess = function(){
+    alert('Entretien enregistré ✅');
+    clearFormAfterSave();
+    loadAllEntries();
+  };
+  req.onerror = function(e){ console.error(e); alert('Erreur enregistrement'); };
+});
+
+/* ---------- Load & render log ---------- */
+function loadAllEntries(filterText=''){
+  if(!db) return;
+  const tx = db.transaction(STORE_NAME,'readonly');
+  const store = tx.objectStore(STORE_NAME);
+  const req = store.getAll();
+  req.onsuccess = function(){
+    const arr = req.result.sort((a,b)=> new Date(b.created) - new Date(a.created));
+    renderLog(arr, filterText);
+    refreshCounts(arr);
+  };
+}
+
+/* Render log */
+function renderLog(entries, filterText=''){
+  const list = document.getElementById('log-list');
+  list.innerHTML = '';
+  const filtered = entries.filter(e=>{
+    if(!filterText) return true;
+    const q = filterText.toLowerCase();
+    return (e.candidate && e.candidate.toLowerCase().includes(q)) ||
+           (e.discord && e.discord.toLowerCase().includes(q));
+  });
+  filtered.forEach(e=>{
+    const div = document.createElement('div');
+    div.className = 'log-item';
+    const date = new Date(e.created).toLocaleString();
+    const decisionLabel = e.decision==='accepted' ? `<span class="success">Accepté</span>` : (e.decision==='probation' ? `<span class="small">Probation</span>` : `<span class="error">Refusé</span>`);
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <strong>${escapeHtml(e.candidate || '—')}</strong> <div class="small">${escapeHtml(e.discord || '')}</div>
+          <div class="small">${escapeHtml(e.serverName || DEFAULT_SERVER_NAME)} • ${date}</div>
+        </div>
+        <div style="text-align:right">
+          <div>${decisionLabel}</div>
+          <div style="margin-top:8px"><button class="btn secondary" onclick='viewEntry(${e.id})'>Voir</button> <button class="btn secondary" onclick='downloadEntry(${e.id})'>Télécharger</button></div>
+        </div>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+/* Search */
+document.getElementById('search-input').addEventListener('input', (ev)=>{
+  const q = ev.target.value.trim();
+  loadAllEntries(q);
+});
+
+/* Refresh counts */
+function refreshCounts(arr){
+  if(!arr){
+    const tx = db.transaction(STORE_NAME,'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    store.getAll().onsuccess = function(){ refreshCounts(store.getAll().result); };
+    return;
+  }
+  document.getElementById('total-count').innerText = arr.length || 0;
+  const acc = (arr.filter(a=>a.decision==='accepted') || []).length;
+  document.getElementById('accepted-count').innerText = acc;
+}
+
+/* Clear DB */
+document.getElementById('clear-db').addEventListener('click', ()=>{
+  if(!confirm('Supprimer toutes les entrées de la base locale ? Cette action est irréversible.')) return;
+  const tx = db.transaction(STORE_NAME,'readwrite');
+  const store = tx.objectStore(STORE_NAME);
+  const req = store.clear();
+  req.onsuccess = ()=>{ alert('Base vidée'); loadAllEntries(); };
+});
+
+/* Export JSON */
+document.getElementById('export-json').addEventListener('click', ()=>{
+  if(!db) return;
+  const tx = db.transaction(STORE_NAME,'readonly');
+  const store = tx.objectStore(STORE_NAME);
+  store.getAll().onsuccess = function(e){
+    const data = e.target.result;
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'entretiens_snebur.json';
+    a.click();
+  };
+});
+
+/* ---------- View Entry (receipt) ---------- */
+function viewEntry(id){
+  const tx = db.transaction(STORE_NAME,'readonly');
+  const store = tx.objectStore(STORE_NAME);
+  const req = store.get(Number(id));
+  req.onsuccess = function(){
+    const e = req.result;
+    if(!e){ alert('Introuvable'); return; }
+    showReceipt(e);
+  };
+}
+
+/* ---------- Download entry as HTML ---------- */
+function downloadEntry(id){
+  const tx = db.transaction(STORE_NAME,'readonly');
+  const store = tx.objectStore(STORE_NAME);
+  store.get(Number(id)).onsuccess = function(ev){
+    const e = ev.target.result;
+    if(!e) return alert('Introuvable');
+    const html = makeReceiptHtml(e);
+    const blob = new Blob([html], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `recu_entretien_${(e.candidate||'candidate').replace(/\s+/g,'_')}.html`;
+    a.click();
+  };
+}
+
+/* ---------- Preview receipt UI ---------- */
+const receiptModal = document.getElementById('receipt-modal');
+const receiptContent = document.getElementById('receipt-content');
+const previewBtn = document.getElementById('preview-receipt');
+const closeReceiptBtn = document.getElementById('close-receipt');
+const printReceiptBtn = document.getElementById('print-receipt');
+
+previewBtn.addEventListener('click', ()=>{
+  const temp = getFormData();
+  showReceipt(temp, true);
+});
+closeReceiptBtn.addEventListener('click', ()=>{ receiptModal.classList.add('hidden'); });
+printReceiptBtn.addEventListener('click', ()=>{ window.print(); });
+
+function showReceipt(data, preview=false){
+  receiptContent.innerHTML = renderReceiptHtml(data);
+  receiptModal.classList.remove('hidden');
+  window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'});
+}
+
+/* Make full html string for download */
+function makeReceiptHtml(e){
+  return `<!doctype html><html><head><meta charset="utf-8"><title>Reçu ${escapeHtml(e.candidate)}</title><style>
+    body{font-family:Inter,Arial;background:#0b1220;color:#e6eef8;padding:24px}
+    .card{background:#071528;padding:24px;border-radius:12px}
+    h1{color:#7dd3fc}
+    pre{white-space:pre-wrap}
+  </style></head><body><div class="card"><h1>Reçu d'entretien — ${escapeHtml(e.candidate)}</h1>
+    <p><strong>Discord:</strong> ${escapeHtml(e.discord||'-')} • <strong>Date:</strong> ${new Date(e.created).toLocaleString()}</p>
+    <h3>Décision</h3><p>${e.decision}</p><h3>Notes modérateur</h3><pre>${escapeHtml(e.notes||'-')}</pre>
+    <h3>Réponses (extraits)</h3><pre>${escapeHtml(JSON.stringify(e.answers, null, 2))}</pre>
+    </div></body></html>`;
+}
+
+/* Render receipt inner HTML (for modal) */
+function renderReceiptHtml(e){
+  const answers = e.answers || {};
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <h3>${escapeHtml(e.candidate)}</h3>
+        <div class="small">${escapeHtml(e.discord||'')}</div>
+        <div class="small">${new Date(e.created).toLocaleString()}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="small">Modérateur : ${escapeHtml(e.moderator || '—')}</div>
+        <div style="margin-top:6px">Décision : <strong>${escapeHtml(e.decision || '')}</strong></div>
+      </div>
+    </div>
+    <hr>
+    <h4>Résumé des réponses</h4>
+    <div style="max-height:320px;overflow:auto;padding-right:6px;">
+      <div><strong>Motivation</strong><div class="small">${escapeHtml(answers.q1||'')}</div></div>
+      <div style="margin-top:8px"><strong>Qualités</strong><div class="small">${escapeHtml(answers.q2||'')}</div></div>
+      <div style="margin-top:8px"><strong>Expérience</strong><div class="small">${escapeHtml(answers.q6||'')}</div></div>
+      <div style="margin-top:8px"><strong>Idées d'événements (ex)</strong><div class="small">${escapeHtml(answers.q4||'')}</div></div>
+      <div style="margin-top:8px"><strong>Notes modérateur</strong><div class="small">${escapeHtml(e.notes||'')}</div></div>
+    </div>
+  `;
+}
+/* ---------- Post to Discord (webhook) ---------- */
+const postDiscordBtn = document.getElementById('post-discord');
+postDiscordBtn.addEventListener('click', ()=>{
+  const entry = getFormData();
+  // Save first, then post (so entry has created timestamp)
+  const tx = db.transaction(STORE_NAME,'readwrite');
+  const store = tx.objectStore(STORE_NAME);
+  const req = store.add(entry);
+  req.onsuccess = function(ev){
+    const addedId = ev.target.result;
+    // fetch saved entry with id to include created
+    store.get(addedId).onsuccess = function(e2){
+      const saved = e2.target.result;
+      postToDiscord(saved);
+      loadAllEntries();
+      clearFormAfterSave();
+    };
+  };
+  req.onerror = ()=>{ alert('Erreur enregistrement avant post Discord'); };
+});
+
+function postToDiscord(entry){
+  const webhook = (localStorage.getItem('snebur_webhook') || WEBHOOK_URL || '').trim();
+  if(!webhook){ if(confirm('Webhook non renseigné. Ouvrir paramètres ?')) settingsPanel.classList.remove('hidden'); return; }
+  const embed = {
+    title: `Entretien — ${entry.candidate}`,
+    fields: [
+      { name: 'Discord', value: entry.discord || '-', inline: true },
+      { name: 'Modérateur', value: entry.moderator || '-', inline: true },
+      { name: 'Décision', value: entry.decision || '-', inline: true },
+      { name: 'Motivation (extrait)', value: (entry.answers.q1||'-').slice(0,100) }
+    ],
+    timestamp: entry.created
+  };
+  fetch(webhook, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ content: `📝 Nouvel entretien — ${entry.candidate}`, embeds: [embed] })
+  }).then(res=>{
+    if(res.ok) alert('Posté sur Discord ✅'); else { alert('Erreur lors du post (vérifie le webhook)'); console.error(res); }
+  }).catch(err=>{ console.error(err); alert('Erreur réseau lors du post Discord'); });
+}
+
+/* ---------- Utility: clear form ---------- */
+function clearFormAfterSave(){
+  document.getElementById('interview-form').reset();
+}
+
+/* ---------- Utility: escapeHtml ---------- */
+function escapeHtml(s){
+  if(!s && s!==0) return '';
+  return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+}
+
+/* ---------- Small helpers to view any entry by id (global for inline onclick in generated HTML) ---------- */
+window.viewEntry = function(id){
+  viewEntry(id);
+};
+window.downloadEntry = function(id){
+  downloadEntry(id);
+};
+
+/* ---------- Finally: initial load checks ---------- */
+window.addEventListener('load', ()=>{
+  // ensure DB ready
+  if(db) loadAllEntries();
+});
+</script>
+
+</body>
+</html>
